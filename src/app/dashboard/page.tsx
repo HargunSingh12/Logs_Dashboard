@@ -11,6 +11,12 @@ export default function Dashboard() {
   const [queryField, setQueryField] = useState<string>('');
   const [queryValue, setQueryValue] = useState<string>('');
 
+  // Alerts state
+  const [alerts, setAlerts] = useState<Array<{ type: 'error' | 'warning' | 'info', message: string }>>([
+    { type: 'info', message: 'Welcome to the dashboard!' },
+    { type: 'warning', message: 'Log import is large, may take time.' }
+  ]);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Get all possible fields from logs
@@ -111,9 +117,47 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950 py-12 transition-colors duration-500">
-      <div className="max-w-3xl mx-auto p-8 bg-gray-900/80 rounded-2xl shadow-2xl border border-gray-800 backdrop-blur-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950 py-12 transition-colors duration-500 flex flex-col md:flex-row gap-8">
+      {/* Left Description Panel */}
+      <div className="md:w-1/3 w-full flex flex-col items-start justify-start px-8 mb-8 md:mb-0">
+        <div className="flex items-center mb-4">
+          <svg className="w-10 h-10 text-blue-400 mr-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20.5C7.305 20.5 3.5 16.695 3.5 12S7.305 3.5 12 3.5 20.5 7.305 20.5 12 16.695 20.5 12 20.5z" /></svg>
+          <span className="text-2xl font-bold text-blue-300">Welcome!</span>
+        </div>
+        <p className="text-blue-100 mb-2">This dashboard lets you import, view, and query log files in JSON format. Use the tools on the right to:</p>
+        <ul className="list-disc list-inside text-blue-200 text-sm space-y-1">
+          <li>Import logs and see instant feedback</li>
+          <li>Browse and inspect individual log entries</li>
+          <li>Run field-based queries to filter logs</li>
+          <li>Clear all logs with one click</li>
+          <li>See important alerts and tips</li>
+        </ul>
+        <p className="text-blue-200 mt-4 text-xs">Tip: You can import a JSON array of logs, then use the query tool to find what you need!</p>
+      </div>
+      {/* Right Dashboard Card */}
+      <div className="md:w-2/3 w-full max-w-7xl p-8 bg-gray-900/80 rounded-2xl shadow-2xl border border-gray-800 backdrop-blur-md mx-auto">
         <h1 className="text-4xl font-extrabold mb-8 text-center text-blue-400 tracking-tight drop-shadow-lg">Log Dashboard</h1>
+        {/* Embedded Alerts Section */}
+        <div className="mb-8 p-6 bg-yellow-900/90 rounded-xl border border-yellow-700 shadow-inner">
+          <h2 className="text-lg font-bold text-yellow-300 mb-2">Alerts</h2>
+          {alerts.length === 0 ? (
+            <div className="text-gray-400">No alerts.</div>
+          ) : (
+            <ul>
+              {alerts.map((alert, idx) => (
+                <li key={idx} className={
+                  (alert.type === 'error'
+                    ? 'text-red-400'
+                    : alert.type === 'warning'
+                    ? 'text-yellow-300'
+                    : 'text-blue-300') + ' text-base mb-1 break-words'
+                }>
+                  {alert.message}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         {/* Import Logs Section */}
         <form className="mb-10" onSubmit={handleImportLogs}>
           <label className="block mb-2 text-base font-semibold text-blue-300">Import Logs (JSON Array)</label>
