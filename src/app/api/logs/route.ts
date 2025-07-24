@@ -11,7 +11,6 @@ export async function GET() {
     return NextResponse.json(logs);
   } catch (err) {
     return NextResponse.json({ error: 'Failed to read logs.' }, { status: 500 });
-    console.log(err);
   }
 }
 
@@ -21,12 +20,10 @@ export async function POST(request: Request) {
     if (!Array.isArray(logs)) {
       return NextResponse.json({ error: 'Payload must be a JSON array of logs.' }, { status: 400 });
     }
-    // Overwrite the file with the new logs array
     fs.writeFileSync(LOGS_PATH, JSON.stringify(logs, null, 2), 'utf-8');
     return NextResponse.json({ imported: logs.length });
   } catch (err) {
     return NextResponse.json({ error: 'Failed to import logs.' }, { status: 500 });
-    console.log(err)
   }
 }
 
@@ -36,6 +33,5 @@ export async function DELETE() {
     return NextResponse.json({ cleared: true });
   } catch (err) {
     return NextResponse.json({ error: 'Failed to clear logs.' }, { status: 500 });
-    console.log(err);
   }
 } 
